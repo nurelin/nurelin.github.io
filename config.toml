@@ -30,6 +30,7 @@ after_dark_menu = [
     {url = "$BASE_URL/categories", name = "Categories"},
     {url = "$BASE_URL/tags", name = "Tags"},
     {url = "$BASE_URL/atom.xml", name = "Feeds"},
+    {url = "https://github.com/nurelin/nurelin.github.io", name = "Blog's Github"},
 ]
 
 after_dark_title = "nurelin's blog"
