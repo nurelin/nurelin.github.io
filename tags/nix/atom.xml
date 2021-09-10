@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>nurelin&#x27;s blog - nix</title>
+	<link href="https://blog.nurelin.eu/tags/nix/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.nurelin.eu"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2021-09-10T00:00:00+00:00</updated>
+	<id>https://blog.nurelin.eu/tags/nix/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Nix Trick: Passing Flake&#x27;s Inputs To NixOS</title>
+		<published>2021-09-10T00:00:00+00:00</published>
+		<updated>2021-09-10T00:00:00+00:00</updated>
+		<link href="https://blog.nurelin.eu/nix-trick/" type="text/html"/>
+		<id>https://blog.nurelin.eu/nix-trick/</id>
+		<content type="html">&lt;p&gt;With Nix&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;nixos.wiki&#x2F;wiki&#x2F;Flakes&quot;&gt;Flake&lt;&#x2F;a&gt; being the future of nix and a better solution than the current combo of NIX_PATH&#x2F;nix-channel.
+I refactored my NixOS configuration but often needed a way to pass flake&#x27;s inputs to nixos configurations top modules.&lt;&#x2F;p&gt;
+&lt;p&gt;After digging a bit in the nixos build system, I found that &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;NixOS&#x2F;nixpkgs&#x2F;blob&#x2F;a6fbb0b67ddf15f495c3fff0a05beb7885759863&#x2F;lib&#x2F;modules.nix#L65-L69&quot;&gt;&lt;code&gt;SpecialArgs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; can be used to pass arbitrary arguments to modules.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;code class=&quot;language-nix&quot; data-lang=&quot;nix&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# flake.nix
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;description &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;NixOS configurations&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;inputs &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nixpkgs&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;github:nixos&#x2F;nixpkgs&#x2F;nixos-21.05&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nixos-hardware&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;github:nixos&#x2F;nixos-hardware&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+  };
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;outputs &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;self, nixpkgs, nixos-hardware, ... &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;@args: {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;nixosConfigurations &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;t250 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nixpkgs&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lib&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nixosSystem &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;specialArgs &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= {
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;flakeInputs &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        };
+        
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;imports &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= [
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;t250.nix
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;];
+      };
+    };
+  };
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# t250.nix;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;flakeInputs, ... &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;:
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;imports &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= [
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;flakeInputs&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nixos-hardware&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nixosModules&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lenovo-thinkpad-x250
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;];
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;</content>
+	</entry>
+</feed>

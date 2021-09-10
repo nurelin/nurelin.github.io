@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>nurelin&#x27;s blog</title>
+
+      
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.nurelin.eu/atom.xml">
+      
+
+      
+          <link rel="stylesheet" href="https://blog.nurelin.eu/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+            
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.nurelin.eu">
+                                <span itemprop="name">Home
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.nurelin.eu&#x2F;categories">
+                                <span itemprop="name">Categories
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.nurelin.eu&#x2F;tags">
+                                <span itemprop="name">Tags
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.nurelin.eu&#x2F;atom.xml">
+                                <span itemprop="name">Feeds
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;github.com&#x2F;nurelin&#x2F;nurelin.github.io">
+                                <span itemprop="name">Blog&#x27;s Github
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+
+            <main>
+                
+                    <header>
+                        <h1>nurelin&#x27;s blog</h1>
+                    </header>
+                
+                
+                    
+    <article itemscope itemtype="http://schema.org/CreativeWork">
+        <header>
+            <h2 itemprop="name">
+                <a href="https://blog.nurelin.eu/nix-trick/">Nix Trick: Passing Flake&#x27;s Inputs To NixOS</a>
+            </h2>
+            <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>1 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2021-09-10
+</span>
+        </header>
+        
+            <div itemprop="summary">
+                <p>With Nix's <a href="https://nixos.wiki/wiki/Flakes">Flake</a> being the future of nix and a better solution than the current combo of NIX_PATH/nix-channel.
+I refactored my NixOS configuration but often needed a way to pass flake's inputs to nixos configurations top modules.</p>
+<p>After digging a bit in the nixos build system, I found that <a href="https://github.com/NixOS/nixpkgs/blob/a6fbb0b67ddf15f495c3fff0a05beb7885759863/lib/modules.nix#L65-L69"><code>SpecialArgs</code></a> can be used to pass arbitrary arguments to modules.</p>
+<pre style="background-color:#2b303b;">
+<code class="language-nix" data-lang="nix"><span style="color:#65737e;"># flake.nix
+</span><span style="color:#c0c5ce;">{
+  </span><span style="color:#d08770;">description </span><span style="color:#c0c5ce;">= &quot;</span><span style="color:#a3be8c;">NixOS configurations</span><span style="color:#c0c5ce;">&quot;;
+
+  </span><span style="color:#d08770;">inputs </span><span style="color:#c0c5ce;">= {
+    </span><span style="color:#d08770;">nixpkgs</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">url </span><span style="color:#c0c5ce;">= &quot;</span><span style="color:#a3be8c;">github:nixos/nixpkgs/nixos-21.05</span><span style="color:#c0c5ce;">&quot;;
+    </span><span style="color:#d08770;">nixos-hardware</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">url </span><span style="color:#c0c5ce;">= &quot;</span><span style="color:#a3be8c;">github:nixos/nixos-hardware</span><span style="color:#c0c5ce;">&quot;;
+  };
+
+  </span><span style="color:#d08770;">outputs </span><span style="color:#c0c5ce;">= </span><span style="color:#8fa1b3;">{ </span><span style="color:#c0c5ce;">self, nixpkgs, nixos-hardware, ... </span><span style="color:#8fa1b3;">}</span><span style="color:#c0c5ce;">@args: {
+    </span><span style="color:#d08770;">nixosConfigurations </span><span style="color:#c0c5ce;">= {
+      </span><span style="color:#d08770;">t250 </span><span style="color:#c0c5ce;">= </span><span style="color:#bf616a;">nixpkgs</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">lib</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">nixosSystem </span><span style="color:#c0c5ce;">{
+        </span><span style="color:#d08770;">specialArgs </span><span style="color:#c0c5ce;">= {
+          </span><span style="color:#d08770;">flakeInputs </span><span style="color:#c0c5ce;">= </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">;
+        };
+        
+        </span><span style="color:#d08770;">imports </span><span style="color:#c0c5ce;">= [
+          </span><span style="color:#a3be8c;">./t250.nix
+        </span><span style="color:#c0c5ce;">];
+      };
+    };
+  };
+}
+
+</span><span style="color:#65737e;"># t250.nix;
+</span><span style="color:#8fa1b3;">{ </span><span style="color:#c0c5ce;">flakeInputs, ... </span><span style="color:#8fa1b3;">}</span><span style="color:#c0c5ce;">:
+{
+  </span><span style="color:#d08770;">imports </span><span style="color:#c0c5ce;">= [
+    </span><span style="color:#bf616a;">flakeInputs</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">nixos-hardware</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">nixosModules</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">lenovo-thinkpad-x250
+  </span><span style="color:#c0c5ce;">];
+}
+</span></code></pre>
+                <nav class="readmore"><a itemprop="url" href="https://blog.nurelin.eu/nix-trick/">Read More&nbsp;&raquo;</a></nav>
+            </div>
+        
+    </article>
+
+                
+
+                <nav>
+                  <p>
+                    
+                    <span>Page 1 of 1</span>
+                    
+                  </p>
+                </nav>
+            </main>
+        
+    </body>
+
+</html>
