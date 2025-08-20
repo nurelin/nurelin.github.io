@@ -3,7 +3,6 @@ title = "Nix Trick: Passing Flake's Inputs To NixOS"
 date = 2021-09-10
 [taxonomies]
 tags = [ "nix", "flake" ]
-categories = [ ]
 +++
 
 With Nix's [Flake](https://nixos.wiki/wiki/Flakes) being the future of nix and a better solution than the current combo of NIX_PATH/nix-channel.

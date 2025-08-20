@@ -1,36 +1,56 @@
 # The URL the site will be built for
 base_url = "https://blog.nurelin.eu"
 
+title = "nurelin's blog"
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
-theme = "after-dark"
+generate_feeds = true
+minify_html = true
 
-generate_feed = true
-
-taxonomies = [
-  # You can enable/disable RSS
-  {name = "categories", feed = true},
-  {name = "tags", feed = true},
-]
-
-title = "nurelin's blog"
+theme = "apollo"
+taxonomies = [{ name = "tags" }]
 
 [markdown]
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
 highlight_code = true
-
-[extra]
-after_dark_menu = [
-    {url = "$BASE_URL", name = "Home"},
-    {url = "$BASE_URL/categories", name = "Categories"},
-    {url = "$BASE_URL/tags", name = "Tags"},
-    {url = "$BASE_URL/atom.xml", name = "Feeds"},
-    {url = "https://github.com/nurelin/nurelin.github.io", name = "Blog's Github"},
+highlight_theme = "css"
+highlight_themes_css = [
+  { theme = "ayu-dark", filename = "syntax-theme-dark.css" },
+  { theme = "ayu-light", filename = "syntax-theme-light.css" },
 ]
 
-after_dark_title = "nurelin's blog"
+[search]
+include_title = true
+include_description = true
+include_path = true
+include_content = true
+index_format = "elasticlunr_json"
+
+[extra]
+socials = [
+  { name = "github", url = "https://github.com/nurelin/", icon = "github" },
+]
+menu = [
+  { name = "/posts", url = "/posts", weight = 1 },
+  { name = "/tags", url = "/tags", weight = 2 },
+  { name = "/feed", url = "/atom.xml", weight = 3 },
+]
+repo_view = true
+repo_url = "https://github.com/nurelin/nurelin.github.io/tree/main/content"
+
+theme = "toggle"              # light, dark, auto, toggle
+fancy_code = true
+dynamic_note = true           # a note that can be toggled
+mathjax = true
+mathjax_dollar_inline_enable = true
+
+
+[extra.taxonomies]
+sort_by = "page_count"         # e.g. name, page_count
+reverse = true
