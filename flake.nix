@@ -2,7 +2,6 @@
   description = "blog.nurelin.eu flake";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
     utils.url   = "github:numtide/flake-utils";
   };
 
@@ -17,7 +16,9 @@
       let pkgs = pkgsFor system;
       in {
         devShell = pkgs.mkShell {
-          buildInputs = [ pkgs.zola ];
+          buildInputs = [
+            pkgs.zola
+          ];
         };
       });
 }
