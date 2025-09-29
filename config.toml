@@ -2,7 +2,8 @@
 base_url = "https://blog.nurelin.eu"
 
 title = "nurelin's blog"
-
+author = "nurelin"
+default_language = "en"
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
@@ -10,7 +11,7 @@ compile_sass = true
 build_search_index = true
 
 generate_feeds = true
-minify_html = true
+minify_html = false  # minifying the html fucks up the page format
 
 theme = "apollo"
 taxonomies = [{ name = "tags" }]
@@ -33,6 +34,7 @@ include_content = true
 index_format = "elasticlunr_json"
 
 [extra]
+toc = true
 socials = [
   { name = "github", url = "https://github.com/nurelin/", icon = "github" },
 ]
@@ -42,7 +44,7 @@ menu = [
   { name = "/feed", url = "/atom.xml", weight = 3 },
 ]
 repo_view = true
-repo_url = "https://github.com/nurelin/nurelin.github.io/tree/main/content"
+repo_url = "https://github.com/nurelin/nurelin.github.io/tree/main/content/"
 
 theme = "toggle"              # light, dark, auto, toggle
 fancy_code = true
