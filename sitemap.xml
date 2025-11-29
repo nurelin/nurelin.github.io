@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://blog.nurelin.eu/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/about/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/posts/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/posts/nix-trick/</loc>
+        <lastmod>2021-09-10</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/posts/uefi-hotkey/</loc>
+        <lastmod>2025-11-29</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/tags/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/tags/bios/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/tags/flake/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/tags/nix/</loc>
+    </url>
+    <url>
+        <loc>https://blog.nurelin.eu/tags/uefi/</loc>
+    </url>
+</urlset>

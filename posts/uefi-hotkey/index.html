@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;blog.nurelin.eu">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Hotkeying OSes in UEFI Boot
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Hotkeying OSes in UEFI Boot" />
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://blog.nurelin.eu/fonts.css rel="stylesheet" />
+    
+
+    
+    
+        <link rel="stylesheet" type="text/css" href="/syntax-theme-dark.css" media="(prefers-color-scheme: dark)" />
+        <link rel="stylesheet" type="text/css" href="/syntax-theme-light.css" media="(prefers-color-scheme: light)" />
+    
+
+    
+    
+
+    
+    <script defer src=https://blog.nurelin.eu/js/codeblock.js></script>
+
+    
+    <script defer src=https://blog.nurelin.eu/js/toc.js></script>
+
+    
+    
+        <script src=https://blog.nurelin.eu/js/note.js></script>
+    
+
+    
+        
+            <script>
+            MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };
+            </script>
+        
+        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    
+
+    
+    
+        
+            
+            <link rel="alternate"
+                  type="application/atom+xml"
+                  title="nurelin&#x27;s blog"
+                  href="https://blog.nurelin.eu/atom.xml" />
+            
+        
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://blog.nurelin.eu/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://blog.nurelin.eu/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://blog.nurelin.eu/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://blog.nurelin.eu/main.css" />
+
+    
+
+    
+        <script defer
+                src="https://blog.nurelin.eu/js/searchElasticlunr.min.js?h=3626c0ef99daa745b31e"></script></head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;blog.nurelin.eu>nurelin&#x27;s blog</a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;nurelin&#x2F;" class="social">
+                    <img alt="github" src="https://blog.nurelin.eu/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://blog.nurelin.eu/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://blog.nurelin.eu/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://blog.nurelin.eu/atom.xml style="margin-right: 0.5em">&#x2F;feed</a>
+        
+
+        
+            <button id="search-button"
+                    class="search-button"
+                    title="$SHORTCUT to open search">
+                <img src="https://blog.nurelin.eu/icons/search.svg"
+                    alt="Search"
+                    class="search-icon">
+            </button>
+
+            <div id="searchModal"
+                class="search-modal js"
+                role="dialog"
+                aria-labelledby="modalTitle">
+                <div id="modal-content">
+                    <h1 id="modalTitle" class="page-header">Search</h1>
+                    <div id="searchBar">
+                        <input id="searchInput"
+                            role="combobox"
+                            autocomplete="off"
+                            spellcheck="false"
+                            aria-expanded="false"
+                            aria-controls="results-container"
+                            placeholder="Search..." />
+                        <button id="clear-search" class="clear-button" title="Clear search">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="results-container">
+                        <div id="results-info">
+                            <span id="zero_results" style="display: none;">No results</span>
+                            <span id="one_result" style="display: none;">1 result</span>
+                            <span id="many_results" style="display: none;">$NUMBER results</span>
+                        </div>
+                        <div id="results" role="listbox"></div>
+                    </div>
+                </div>
+            </div>
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://blog.nurelin.eu/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://blog.nurelin.eu/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Hotkeying OSes in UEFI Boot
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2025-11-29</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+                        
+                        
+                            
+                        
+
+                        
+                            
+                            :: <a href="https:&#x2F;&#x2F;github.com&#x2F;nurelin&#x2F;nurelin.github.io&#x2F;tree&#x2F;main&#x2F;content&#x2F;posts&#x2F;uefi-hotkey.md" target="_blank" rel="noopener noreferrer">Source Code</a>
+                        
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://blog.nurelin.eu/tags/uefi/"
+                                   class="post-tag">UEFI</a>
+                            
+                                <a href="https://blog.nurelin.eu/tags/bios/"
+                                   class="post-tag">BIOS</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <p>If you are multi-booting OSes on your computer and would like to speed up
+the boot by hotkeying your OSes rather than waiting for a bootloader,
+there might be a way even without direct manufacturer support.</p>
+<span id="continue-reading"></span>
+<p>The UEFI specification describes <a href="https://uefi.org/specs/UEFI/2.11/03_Boot_Manager.html#launching-boot-load-options-using-hot-keys">a system to allow hotkey boot entries</a>.
+The system is optional but since most if not all UEFI systems are based on
+the open-source edk2 which implements it, I expect that most systems have
+it even if it is not exposed.</p>
+<p>The UEFI variable <code>BootOptionSupport</code> is a bitwise OR of multiple capabilities of the UEFI BIOS.
+The one we are interested in is defined as</p>
+<pre data-lang="C" class="language-C z-code"><code class="language-C" data-lang="C"><span class="z-source z-c"><span class="z-meta z-preprocessor z-macro z-c"><span class="z-keyword z-control z-import z-define z-c">#define</span></span><span class="z-meta z-preprocessor z-macro z-c"> <span class="z-entity z-name z-constant z-preprocessor z-c">EFI_BOOT_OPTION_SUPPORT_KEY</span></span><span class="z-meta z-preprocessor z-macro z-c">         <span class="z-constant z-numeric z-integer z-hexadecimal z-c"><span class="z-punctuation z-definition z-numeric z-base z-c">0x</span>00000001</span></span>
+</span></code></pre>
+<p>So we need to check if our BIOS does support it:</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">$</span></span><span class="z-meta z-function-call z-arguments z-shell"> if test <span class="z-meta z-group z-expansion z-arithmetic z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">((</span><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">od</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>An</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>tu8</span> /sys/firmware/efi/efivars/BootOptionSupport-<span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span></span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span> <span class="z-keyword z-operator z-bitwise z-shell">&amp;</span> <span class="z-constant z-numeric z-integer z-decimal z-shell">1</span><span class="z-punctuation z-section z-parens z-end z-shell">))</span></span></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-keyword z-control z-conditional z-then z-shell">then</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-echo z-shell">echo</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>Hotkey supported !<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-keyword z-control z-conditional z-else z-shell">else</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-echo z-shell">echo</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>Hotkey unavailable<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-keyword z-control z-conditional z-end z-shell">fi</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">Hotkey</span></span><span class="z-meta z-function-call z-arguments z-shell"> supported !</span>
+</span></code></pre>
+<p>Great! Now we need to actually hotkey our OSes.</p>
+<p>Like most aspects of UEFI, the boot process is controlled through UEFI variables.
+For example, all of the OSes your firmware knows and can boot are contained in the <code>BootXXXX</code> variables.
+The issue is that the content of those variables is a C struct that is rather difficult to manipulate with shell tools.</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">$</span></span><span class="z-meta z-function-call z-arguments z-shell"> cat /sys/firmware/efi/efivars/Boot0001-8be4df61-93ca-11d2-aa0d-00e098032b8c    </span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">tLinux</span></span><span class="z-meta z-function-call z-arguments z-shell"> Boot Manager<span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>����^��Z�A���▒yP�qF\EFI\systemd\systemd-bootx64.efi�****
+</span></span></span></code></pre>
+<p>Now we want to create a <code>Key####</code> variable which has its own <a href="https://uefi.org/specs/UEFI/2.11/03_Boot_Manager.html#launching-boot-load-options-using-hot-keys">C-struct</a>
+to refer both to the Boot Entry and to the key you want to associate.</p>
+<p>I do not want to go too deep in the specific process here but you have a few ways to do it.
+The easiest would be to use a graphical tool like <a href="https://github.com/Neverous/efibooteditor">efibooteditor</a>.
+We could alternatively try to edit the UEFI variables in <code>/sys/firmware/efi/efivars/</code> ourselves but that seems like too much work to do it safely.
+I personally went with the <a href="https://uefi.org/sites/default/files/resources/UEFI_Shell_Spec_2_0.pdf">UEFI shell</a> and <a href="https://uefi.org/sites/default/files/resources/UEFI_Shell_Spec_2_0.pdf#%5B%7B%22num%22%3A1582%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C0%2C792%2Cnull%5D">bcfg command</a> route.</p>
+<p>But in the end, even if the capability is not exposed in the BIOS menu, you might still be able to use it!</p>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+
+        </div>
+    </body>
+
+</html>
